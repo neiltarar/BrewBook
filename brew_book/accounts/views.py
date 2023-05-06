@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import AccessToken
-from .serializers import UserRegistrationSerialiser, UserLoginSerialiser
+from .serialisers import UserRegistrationSerialiser, UserLoginSerialiser
 
 class UserRegistrationView(generics.GenericAPIView):
     serializer_class = UserRegistrationSerialiser

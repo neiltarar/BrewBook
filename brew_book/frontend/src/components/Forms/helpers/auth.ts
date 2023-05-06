@@ -110,7 +110,6 @@ export const isAccessTokenExpired = (): boolean => {
 };
 
 export const handleLogout = (onLogout:any) => {
-    console.log('handle log out')
     Cookies.remove('access');
     Cookies.remove('access_expiration')
     Cookies.remove('refresh')
