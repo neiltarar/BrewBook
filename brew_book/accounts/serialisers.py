@@ -41,7 +41,6 @@ class UserLoginSerialiser(serializers.Serializer):
         password = data.get('password', '')
 
         if username and password:
-            print(username)
             user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:
