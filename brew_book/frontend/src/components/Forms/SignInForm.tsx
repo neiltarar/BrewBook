@@ -22,7 +22,6 @@ const SignInForm: React.FC<Props> = ({ loginSchema, handleLoginSubmit }) => {
       initialValues={{ username: '', password: '' }}
       validationSchema={loginSchema}
       onSubmit={(values, { setSubmitting }) => {
-        console.log('Submitting form with values:', values);
         handleLoginSubmit(values);
         setSubmitting(false);
       }}
