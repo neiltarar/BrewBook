@@ -16,16 +16,20 @@ export const handleLoginSubmit = async (
     API_URL: string
   ): Promise<void> => {
     const response = await fetch(`${API_URL}/accounts/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: values.username, password: values.password }),
-        // credentials: 'include', // Add this line
-      });
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: values.username, password: values.password }),
+    });
   
     if (response.ok) {
       const data = await response.json();
-      console.log(data)
-      onLogin(true);
+      const accessToken: string = data.access;
+      const expiresIn: number = data.expires_in; // Assuming the backend returns the expiration time in seconds
+      const expirationTime = new Date().getTime() + expiresIn * 1000;
+      Cookies.set('access', accessToken);
+      Cookies.set('access_expiration', expirationTime.toString());
+      Cookies.set('refresh', data.refresh); // Also save the refresh token
+      onLogin(accessToken);
     } else {
       console.log('Invalid credentials');
     }

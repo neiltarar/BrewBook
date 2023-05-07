@@ -35,7 +35,6 @@ class UserRegistrationSerialiser(serializers.ModelSerializer):
 class UserLoginSerialiser(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
-
     def validate(self, data):
         username = data.get('username', '')
         password = data.get('password', '')

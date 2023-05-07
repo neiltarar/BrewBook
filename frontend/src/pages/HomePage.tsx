@@ -7,12 +7,12 @@ interface Props {
 const HomePage: React.FC<Props> = ({ refreshTokenIfNeeded }) => {
   const fetchUserData = async () => {
     await refreshTokenIfNeeded();
-    
+    // Make the API call to fetch user data
   };
 
   useEffect(() => {
-    // fetchUserData();
-  }, []); 
+    fetchUserData();
+  }, []); // Pass an empty dependency array to run the effect only on mount
 
   return (
     <div>
