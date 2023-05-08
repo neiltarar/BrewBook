@@ -5,9 +5,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
-from rest_framework_simplejwt.views import TokenRefreshView
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework import exceptions as rest_exceptions, response, decorators as rest_decorators, permissions as rest_permissions
+from django.contrib.auth import get_user_model
+from rest_framework import exceptions as rest_exceptions, permissions as rest_permissions
 from rest_framework_simplejwt import tokens, views as jwt_views, serializers as jwt_serializers, exceptions as jwt_exceptions
 from .serialisers import UserRegistrationSerialiser, UserLoginSerialiser
 
@@ -106,15 +105,28 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
 
 
 class CookieTokenRefreshView(jwt_views.TokenRefreshView):
+    serializer_class = CookieTokenRefreshSerializer
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get('refresh'):
+            # Get the refresh token from request cookies
+            refresh_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+
+            # Decode the refresh token
+            decoded_refresh_token = RefreshToken(refresh_token)
+
+            # Get the user from the decoded refresh token
+            User = get_user_model()
+            user_id = decoded_refresh_token['user_id']
+            user = User.objects.get(id=user_id)
+
+            # Create a new refresh token
+            new_refresh_token = RefreshToken.for_user(user)
             response.set_cookie(
                 key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
-                value=tokens['refresh_token'],
-                expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                value=str(new_refresh_token),
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
             )
 
             del response.data['refresh']
