@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
@@ -15,6 +15,7 @@ const API_URL = process.env.NODE_ENV === 'production'
   ? '/api'
   : `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api`;
 
+console.log(API_URL)
 
 const App: React.FC = () => {
   const [token, setToken] = useState(
@@ -35,12 +36,17 @@ const App: React.FC = () => {
   };
 
   const handleLogin = (token: string) => {
+    console.log("token: " + token)
     setToken(token);
   };
 
   const handleLogout = () => {
     setToken(false)
   }
+
+  useEffect(()=> {
+
+  }, [token])
 
   return (
     <Router>
@@ -54,7 +60,6 @@ const App: React.FC = () => {
                   path="/"
                   element={<HomePage refreshTokenIfNeeded ={refreshTokenIfNeeded} />}
               />
-              {/* Add other routes here when the user is logged in */}
           </Routes>
         </>
       ) : (
