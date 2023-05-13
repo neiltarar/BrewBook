@@ -33,7 +33,9 @@ export const signin = async (req, res) => {
 				httpOnly: true,
 				secure: false,
 			});
-			res.status(200).json({ message: "Successful Login" });
+			res
+				.status(200)
+				.json({ message: "Successful Login", user: user.first_name });
 		} else {
 			res.status(500);
 			console.log("Error: Couldn't save the refresh token");
@@ -43,7 +45,7 @@ export const signin = async (req, res) => {
 	}
 };
 
-export const signOut = async (req, res) => {
+export const signout = async (req, res) => {
 	const accessToken = req.cookies.accessToken;
 	const refreshToken = req.cookies.refreshToken;
 	// If there's a refresh token, delete it from the database

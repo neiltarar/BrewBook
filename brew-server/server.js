@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config(); // Load the env variables
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 
