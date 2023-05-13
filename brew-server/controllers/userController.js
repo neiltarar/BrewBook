@@ -6,13 +6,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const signup = async (req, res) => {
-	const { firstName, lastName, email, password, password2 } = req.body;
-
+	const { firstName, lastName, email, password, passwordRepeat } = req.body;
 	let errors = [];
 	if (!isValidEmail(email)) {
 		errors.push("Email is not valid");
 	}
-	if (!isMatchingPasswords(password, password2)) {
+	if (!isMatchingPasswords(password, passwordRepeat)) {
 		errors.push("Passwords do not match");
 	}
 
