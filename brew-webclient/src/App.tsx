@@ -4,6 +4,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { SignUp } from "./components/Auth/SignUp";
 import { SignIn } from "./components/Auth/SignIn";
 import { Home } from "./components/pages/Home";
+import DefaultLayout from "./components/Layout/DefaultLayout";
 
 function App() {
 	return (
@@ -12,7 +13,14 @@ function App() {
 				<Routes>
 					<Route path='/signup' element={<SignUp />} />
 					<Route path='/signin' element={<SignIn />} />
-					<Route path='/' element={<Home />} />
+					<Route
+						path='/'
+						element={
+							<DefaultLayout>
+								<Home />
+							</DefaultLayout>
+						}
+					/>
 				</Routes>
 			</Router>
 		</AuthProvider>

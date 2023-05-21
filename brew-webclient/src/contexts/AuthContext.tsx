@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
-// Create a context that will hold the authentication state and methods
 // @ts-ignore
 const AuthContext = createContext();
 
@@ -10,14 +9,35 @@ export const useAuth = () => {
 
 // @ts-ignore
 export const AuthProvider = ({ children }) => {
-	const [currentUser, setCurrentUser] = useState(null);
-	const [loading, setLoading] = useState(true);
+	const [currentUser, setCurrentUser] = useState(() => {
+		const storedUser = localStorage.getItem("currentUser");
+		return storedUser ? JSON.parse(storedUser) : null;
+	});
+	const [loading, setLoading] = useState(() => {
+		const storedLoadingState = localStorage.getItem("loading");
+		return storedLoadingState ? JSON.parse(storedLoadingState) : false;
+	});
+	const [beers, setBeers] = useState([]);
 
 	// @ts-ignore
-	const signup = async (email, password) => {
-		// signup function
-		// Here, you might call an API to sign up the user
-		// Once signed up, you could set the currentUser state
+	const signup = async (values) => {
+		try {
+			const response = await fetch(
+				`${process.env.REACT_APP_API_URL}/users/signup`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+					body: JSON.stringify(values),
+				}
+			);
+			return response;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
 	};
 
 	// @ts-ignore
@@ -38,32 +58,89 @@ export const AuthProvider = ({ children }) => {
 				// If the login was successful, you could set the currentUser state here
 				const data = await response.json();
 				console.log(data.user);
-				setCurrentUser(data.user); // Adjust this line based on your API's response structure
+				// @ts-ignore
+				setCurrentUser({ name: data.user }); // Adjust this line based on your API's response structure
+				setLoading(true);
+				// Update localStorage
+				localStorage.setItem(
+					"currentUser",
+					JSON.stringify({ name: data.user })
+				);
+				localStorage.setItem("loading", JSON.stringify(true));
 			}
 			return response; // Return the response so it can be used in the SignIn component
 		} catch (error) {
+			localStorage.removeItem("currentUser");
+			localStorage.setItem("loading", JSON.stringify(false));
+			setLoading(false);
+			setCurrentUser(null);
 			console.log(error);
 			return null;
 		}
 	};
 
 	const signout = async () => {
-		// signout function
-		// Here, you might invalidate the user's session or token
-		// Once signed out, you could clear the currentUser state
+		try {
+			const response = await fetch(
+				`${process.env.REACT_APP_API_URL}/sessions/signout`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+				}
+			);
+			// Update localStorage
+			localStorage.removeItem("currentUser");
+			localStorage.setItem("loading", JSON.stringify(false));
+
+			setLoading(false);
+			setCurrentUser(null);
+			console.log(response);
+			return response;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+	};
+
+	const fetchBeers = async () => {
+		try {
+			const response = await fetch(
+				`${process.env.REACT_APP_API_URL}/beers-brewing/serve-beers`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+				}
+			);
+			console.log(response);
+			if (response.ok) {
+				const data = await response.json();
+				console.log("beers: ", data);
+				setBeers(data);
+			} else {
+				console.log("Not Authorised");
+				localStorage.removeItem("currentUser");
+				localStorage.setItem("loading", JSON.stringify(false));
+				setLoading(false);
+				setCurrentUser(null);
+			}
+		} catch (error) {
+			localStorage.removeItem("currentUser");
+			localStorage.setItem("loading", JSON.stringify(false));
+			setLoading(false);
+			setCurrentUser(null);
+			console.log(error);
+		}
 	};
 
 	useEffect(() => {
-		// Function to check if user is authenticated
-		const checkAuth = async () => {
-			// Send a request to your server to check if the user is authenticated
-			// If authenticated, set the currentUser state
-			// You might store a user's session or token in localStorage, cookies, etc.
-			// If the user is authenticated, you might get the user data and set the currentUser state
-		};
-
-		checkAuth();
-		setLoading(false);
+		// Fetch beers
+		fetchBeers();
 	}, []);
 
 	const value = {
@@ -71,11 +148,8 @@ export const AuthProvider = ({ children }) => {
 		signup,
 		signin,
 		signout,
+		beers,
 	};
 
-	return (
-		<AuthContext.Provider value={value}>
-			{!loading && children}
-		</AuthContext.Provider>
-	);
+	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

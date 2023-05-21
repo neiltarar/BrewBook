@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface MyFormValues {
 	email: string;
@@ -16,6 +17,8 @@ export const SignIn: React.FC<{}> = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [responseMessage, setResponseMessage] =
 		useState<MyVariables["responseMessage"]>(false);
+
+	const navigate = useNavigate();
 
 	// @ts-ignore
 	const { signin } = useAuth();
@@ -34,9 +37,13 @@ export const SignIn: React.FC<{}> = () => {
 		setIsSubmitting(false);
 		// @ts-ignore
 		const response = await signin(values);
-		if (!response.ok) setResponseMessage("Login failed.");
-		const data = await response;
-		setResponseMessage("Logged in");
+		if (!response.ok) {
+			setResponseMessage("Login failed.");
+		} else {
+			const data = await response;
+			setResponseMessage("Logged in");
+			navigate("/"); // This line will navigate to the home page
+		}
 	};
 
 	return (

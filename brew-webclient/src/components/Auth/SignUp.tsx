@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface MyFormValues {
 	firstName: string;
@@ -20,6 +21,9 @@ export const SignUp: React.FC<{}> = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [responseMessage, setResponseMessage] =
 		useState<MyVariables["responseMessage"]>(false);
+
+	// @ts-ignore
+	const { signup } = useAuth();
 
 	const initialValues: MyFormValues = {
 		firstName: "",
@@ -43,17 +47,7 @@ export const SignUp: React.FC<{}> = () => {
 
 	const handleSubmit = async (values: MyFormValues) => {
 		setIsSubmitting(true);
-		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/users/signup`,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				credentials: "include",
-				body: JSON.stringify(values),
-			}
-		);
+		const response = await signup(values);
 		if (!response.ok) {
 			setResponseMessage("Account couldn't be created.");
 			setIsSubmitting(false);

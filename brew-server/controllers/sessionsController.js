@@ -37,8 +37,8 @@ export const signin = async (req, res) => {
 				.status(200)
 				.json({ message: "Successful Login", user: user.first_name });
 		} else {
-			res.status(500);
 			console.log("Error: Couldn't save the refresh token");
+			return res.status(500).json({ message: "Internal Server Error" }); // Add return statement here to prevent further execution
 		}
 	} else {
 		res.status(400).json({ message: "Unauthorised" });
@@ -51,7 +51,7 @@ export const signout = async (req, res) => {
 	// If there's a refresh token, delete it from the database
 	if (accessToken || refreshToken) {
 		try {
-			let result = await deleteRefreshToken(refreshToken);
+			await deleteRefreshToken(refreshToken);
 		} catch (error) {
 			console.error("Failed to delete refresh token:", error);
 			return res.sendStatus(500);
