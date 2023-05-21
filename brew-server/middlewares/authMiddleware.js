@@ -9,17 +9,12 @@ dotenv.config();
 export const authenticateToken = async (req, res, next) => {
 	const accessToken = req.cookies.accessToken;
 	const refreshToken = req.cookies.refreshToken;
-	console.log("here1");
 	if (accessToken === null) return res.sendStatus(401); // If there's no token, return 401 (Unauthorised)
-	console.log("here2");
 	jwt.verify(
 		accessToken,
 		process.env.ACCESS_TOKEN_SECRET_KEY,
 		async (err, user) => {
-			console.log("here3");
 			if (err) {
-				console.log("here4");
-
 				if (err.name === "TokenExpiredError") {
 					if (!refreshToken) return res.sendStatus(401);
 
@@ -50,13 +45,9 @@ export const authenticateToken = async (req, res, next) => {
 						}
 					);
 				} else {
-					console.log("here5");
-
 					return res.sendStatus(403); // If the token is not valid, return 403 (Forbidden)
 				}
 			} else {
-				console.log("here6");
-
 				req.user = user;
 				const fetchedUser = await findUserByEmail(user.email); // Fetch the user information from the database
 				res.user = fetchedUser.first_name; // Include the user information in the response

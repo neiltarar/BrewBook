@@ -55,11 +55,10 @@ export const AuthProvider = ({ children }) => {
 				}
 			);
 			if (response.ok) {
-				// If the login was successful, you could set the currentUser state here
 				const data = await response.json();
 				console.log(data.user);
 				// @ts-ignore
-				setCurrentUser({ name: data.user }); // Adjust this line based on your API's response structure
+				setCurrentUser({ name: data.user });
 				setLoading(true);
 				// Update localStorage
 				localStorage.setItem(
@@ -68,7 +67,7 @@ export const AuthProvider = ({ children }) => {
 				);
 				localStorage.setItem("loading", JSON.stringify(true));
 			}
-			return response; // Return the response so it can be used in the SignIn component
+			return response;
 		} catch (error) {
 			localStorage.removeItem("currentUser");
 			localStorage.setItem("loading", JSON.stringify(false));
@@ -117,10 +116,8 @@ export const AuthProvider = ({ children }) => {
 					credentials: "include",
 				}
 			);
-			console.log(response);
 			if (response.ok) {
 				const data = await response.json();
-				console.log("beers: ", data);
 				setBeers(data);
 			} else {
 				console.log("Not Authorised");
@@ -141,7 +138,7 @@ export const AuthProvider = ({ children }) => {
 	useEffect(() => {
 		// Fetch beers
 		fetchBeers();
-	}, []);
+	}, [currentUser]);
 
 	const value = {
 		currentUser,
