@@ -1,14 +1,33 @@
-// Home.js
-import React from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export const Home = () => {
+	const navigate = useNavigate();
 	// @ts-ignore
-	const { currentUser } = useAuth();
+	const { currentUser, beers } = useAuth();
 	console.log(currentUser);
-	if (currentUser) {
-		return <h1>Welcome, {currentUser.name}!</h1>; // Change `currentUser.name` to the correct property that holds the user's name
-	} else {
-		return <h1>Please sign in.</h1>;
+	useEffect(() => {
+		if (!currentUser) {
+			navigate("/signin");
+		}
+	}, [currentUser, navigate]);
+
+	if (!currentUser) {
+		return <p>Loading...</p>;
 	}
+
+	return (
+		<div>
+			<h1>Welcome, {currentUser.name}!</h1>
+			<h2>Your beers:</h2>
+			<ul>
+				{beers.map((beer: any) => (
+					<li key={beer.id}>
+						{beer.name}: {beer.description}
+					</li>
+				))}
+			</ul>
+		</div>
+	);
 };

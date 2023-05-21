@@ -10,11 +10,11 @@ export const saveRefreshToken = async (userId, refreshToken) => {
 
 export const findRefreshToken = async (refreshToken) => {
 	try {
-		const result = await db.query(
+		const result = await db(
 			"SELECT * FROM refresh_tokens WHERE refresh_token = $1",
 			[refreshToken]
 		);
-		return result.rows[0];
+		return result[0];
 	} catch (error) {
 		console.error("Error occurred while searching for refresh token: ", error);
 		return null;
