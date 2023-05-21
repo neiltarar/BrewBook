@@ -1,12 +1,16 @@
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { MyBeers } from "../Beers/MyBeers";
+import { AllBeers } from "../Beers/AllBeers";
+import { useLocation } from "react-router-dom";
 
 export const Home = () => {
 	const navigate = useNavigate();
+	const location = useLocation();
 	// @ts-ignore
 	const { currentUser, beers } = useAuth();
-	console.log(currentUser);
+
 	useEffect(() => {
 		if (!currentUser) {
 			navigate("/signin");
@@ -16,18 +20,9 @@ export const Home = () => {
 	if (!currentUser) {
 		return <p>Loading...</p>;
 	}
-
-	return (
-		<div>
-			<h1>Welcome, {currentUser.name}!</h1>
-			<h2>Your beers:</h2>
-			<ul>
-				{beers.map((beer: any) => (
-					<li key={beer.id}>
-						{beer.name}: {beer.description}
-					</li>
-				))}
-			</ul>
-		</div>
-	);
+	// render MyBeers if pathname is /my-beers
+	if (location.pathname === "/all-beers") {
+		return <AllBeers currentUser={currentUser} beers={beers} />;
+	}
+	return <MyBeers currentUser={currentUser} beers={beers} />;
 };

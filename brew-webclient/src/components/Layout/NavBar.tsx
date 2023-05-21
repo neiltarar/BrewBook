@@ -1,40 +1,82 @@
-import { FC } from "react";
-import { Link } from "react-router-dom";
+import React, { FC, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 export const Navbar: FC = () => {
-	const navigate = useNavigate();
 	// @ts-ignore
 	const { signout } = useAuth();
+	const [navbar, setNavbar] = useState(false);
 
 	return (
-		<nav className='flex items-center justify-between bg-teal-500 p-6'>
-			<div className='flex items-center flex-shrink-0 text-white mr-6'>
-				<span className='font-semibold text-xl tracking-tight'>Beer App</span>
-			</div>
-			<div className='w-full block flex-grow lg:flex lg:items-center lg:w-auto'>
-				<div className='text-sm lg:flex-grow'>
-					<Link
-						to='/'
-						className='block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4'
-					>
-						Main Page
-					</Link>
-					<Link
-						to='/my-beers'
-						className='block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4'
-					>
-						My Beers
-					</Link>
+		<nav className='w-full shadow'>
+			<div className='justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8'>
+				<div>
+					<div className='flex items-center justify-between py-3 md:py-5 md:block'>
+						<a href='/'>
+							<img
+								src='./images/beerLogo.png'
+								className='w-24 h-24'
+								alt='Beer Logo'
+							/>
+						</a>
+						<div className='md:hidden'>
+							<button
+								className='p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border'
+								onClick={() => setNavbar(!navbar)}
+							>
+								{navbar ? (
+									<svg
+										xmlns='http://www.w3.org/2000/svg'
+										className='w-6 h-6 text-black'
+										viewBox='0 0 20 20'
+										fill='currentColor'
+									>
+										<path
+											fillRule='evenodd'
+											d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
+											clipRule='evenodd'
+										/>
+									</svg>
+								) : (
+									<svg
+										xmlns='http://www.w3.org/2000/svg'
+										className='w-6 h-6 text-black'
+										fill='none'
+										viewBox='0 0 24 24'
+										stroke='currentColor'
+										strokeWidth={2}
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											d='M4 6h16M4 12h16M4 18h16'
+										/>
+									</svg>
+								)}
+							</button>
+						</div>
+					</div>
 				</div>
 				<div>
-					<button
-						className='inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0'
-						onClick={signout}
+					<div
+						className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
+							navbar ? "block" : "hidden"
+						}`}
 					>
-						Sign Out
-					</button>
+						<ul className='items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0'>
+							<li className='text-black hover:text-indigo-200'>
+								<a href='/pour-new'>Pour A New Beer</a>
+							</li>
+							<li className='text-black hover:text-indigo-200'>
+								<a href='/all-beers'>All Beers</a>
+							</li>
+							<li className='text-black hover:text-indigo-200'>
+								<a href='/my-beers'>My Beers</a>
+							</li>
+							<li className='text-black hover:text-indigo-200'>
+								<button onClick={signout}>Sign Out</button>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</nav>
