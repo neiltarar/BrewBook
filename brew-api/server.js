@@ -14,12 +14,12 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use("/", (req, res) => {
-	res.send("brewery is open :)");
-});
 app.use("/users", userRoutes);
 app.use("/sessions", sessionsRoutes);
 app.use("/beers-brewing", authenticateToken, beersRoutes);
+app.use("/", (req, res) => {
+	res.send("brewery is open :)");
+});
 
 const PORT = process.env.EXPRESS_PORT;
 app.listen(PORT, () =>

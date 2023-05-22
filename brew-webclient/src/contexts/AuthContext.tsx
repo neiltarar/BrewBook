@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }) => {
 			);
 			if (response.ok) {
 				const data = await response.json();
-				console.log(data.user);
 				// @ts-ignore
 				setCurrentUser({ name: data.user });
 				setLoading(true);
@@ -96,7 +95,6 @@ export const AuthProvider = ({ children }) => {
 
 			setLoading(false);
 			setCurrentUser(null);
-			console.log(response);
 			return response;
 		} catch (error) {
 			console.log(error);

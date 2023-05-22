@@ -37,7 +37,7 @@ export const SignIn: React.FC<{}> = () => {
 		setIsSubmitting(false);
 		// @ts-ignore
 		const response = await signin(values);
-		if (!response.ok) {
+		if (response.status !== 200) {
 			setResponseMessage("Login failed.");
 		} else {
 			const data = await response;
