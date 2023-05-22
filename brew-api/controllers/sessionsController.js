@@ -13,32 +13,37 @@ dotenv.config();
 export const signin = async (req, res) => {
 	const { email, password } = req.body;
 	const user = await findUserByEmail(email);
-	const passwordHash = user["password_hash"];
-	if (user && (await bcrypt.compare(password, passwordHash))) {
-		const accessToken = jwt.sign(
-			{ email },
-			process.env.ACCESS_TOKEN_SECRET_KEY,
-			{ expiresIn: "10m" }
-		);
-		const refreshToken = jwt.sign(
-			{ email },
-			process.env.REFRESH_TOKEN_SECRET_KEY,
-			{ expiresIn: "48h" }
-		);
-		await deleteRefreshTokenForUser(user.id);
-		const result = await saveRefreshToken(user.id, refreshToken);
-		if (result) {
-			res.cookie("accessToken", accessToken, { httpOnly: true, secure: false });
-			res.cookie("refreshToken", refreshToken, {
-				httpOnly: true,
-				secure: false,
-			});
-			res
-				.status(200)
-				.json({ message: "Successful Login", user: user.first_name });
-		} else {
-			console.log("Error: Couldn't save the refresh token");
-			return res.status(500).json({ message: "Internal Server Error" }); // Add return statement here to prevent further execution
+	if (user && user.is_activated) {
+		const passwordHash = user["password_hash"];
+		if (user && (await bcrypt.compare(password, passwordHash))) {
+			const accessToken = jwt.sign(
+				{ email },
+				process.env.ACCESS_TOKEN_SECRET_KEY,
+				{ expiresIn: "10m" }
+			);
+			const refreshToken = jwt.sign(
+				{ email },
+				process.env.REFRESH_TOKEN_SECRET_KEY,
+				{ expiresIn: "48h" }
+			);
+			await deleteRefreshTokenForUser(user.id);
+			const result = await saveRefreshToken(user.id, refreshToken);
+			if (result) {
+				res.cookie("accessToken", accessToken, {
+					httpOnly: true,
+					secure: false,
+				});
+				res.cookie("refreshToken", refreshToken, {
+					httpOnly: true,
+					secure: false,
+				});
+				res
+					.status(200)
+					.json({ message: "Successful Login", user: user.first_name });
+			} else {
+				console.log("Error: Couldn't save the refresh token");
+				return res.status(500).json({ message: "Internal Server Error" }); // Add return statement here to prevent further execution
+			}
 		}
 	} else {
 		res.status(400).json({ message: "Unauthorised" });
