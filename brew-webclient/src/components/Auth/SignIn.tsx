@@ -37,9 +37,10 @@ export const SignIn: React.FC<{}> = () => {
 		setIsSubmitting(false);
 		// @ts-ignore
 		const response = await signin(values);
-		if (response.status !== 200) {
+		if (!response.ok) {
 			setResponseMessage("Login failed.");
 		} else {
+			const data = await response;
 			setResponseMessage("Logged in");
 			navigate("/"); // This line will navigate to the home page
 		}
