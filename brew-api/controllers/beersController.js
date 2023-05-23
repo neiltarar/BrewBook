@@ -7,3 +7,7 @@ const beers = [
 export const getBeers = async (req, res) => {
 	res.status(200).json(beers);
 };
+
+export const addBeers = async (req, res) => {
+	console.log(req.body);
+};

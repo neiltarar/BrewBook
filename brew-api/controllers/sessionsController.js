@@ -39,7 +39,10 @@ export const signin = async (req, res) => {
 				});
 				res
 					.status(200)
-					.json({ message: "Successful Login", user: user.first_name });
+					.json({
+						message: "Successful Login",
+						user: { name: user.first_name, id: user.id },
+					});
 			} else {
 				console.log("Error: Couldn't save the refresh token");
 				return res.status(500).json({ message: "Internal Server Error" }); // Add return statement here to prevent further execution

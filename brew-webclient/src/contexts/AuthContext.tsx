@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 			if (response.ok) {
 				const data = await response.json();
 				// @ts-ignore
-				setCurrentUser({ name: data.user });
+				setCurrentUser({ name: data.user.name, id: data.user.id });
 				setLoading(true);
 				// Update localStorage
 				localStorage.setItem(
