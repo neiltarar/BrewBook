@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 // @ts-ignore
 const AuthContext = createContext();
@@ -22,15 +23,11 @@ export const AuthProvider = ({ children }) => {
 	// @ts-ignore
 	const signup = async (values) => {
 		try {
-			const response = await fetch(
+			const response = await axios.post(
 				`${process.env.REACT_APP_API_URL}/users/signup`,
+				values,
 				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
-					body: JSON.stringify(values),
+					withCredentials: true,
 				}
 			);
 			return response;
@@ -43,26 +40,21 @@ export const AuthProvider = ({ children }) => {
 	// @ts-ignore
 	const signin = async (values) => {
 		try {
-			const response = await fetch(
+			const response = await axios.post(
 				`${process.env.REACT_APP_API_URL}/sessions/signin`,
+				values,
 				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
-					body: JSON.stringify(values),
+					withCredentials: true,
 				}
 			);
-			if (response.ok) {
-				const data = await response.json();
-				// @ts-ignore
-				setCurrentUser({ name: data.user.name, id: data.user.id });
+			if (response.status === 200) {
+				setCurrentUser({
+					user: { name: response.data.user.name, id: response.data.user.id },
+				});
 				setLoading(true);
-				// Update localStorage
 				localStorage.setItem(
 					"currentUser",
-					JSON.stringify({ name: data.user })
+					JSON.stringify({ user: response.data.user })
 				);
 				localStorage.setItem("loading", JSON.stringify(true));
 			}
@@ -79,20 +71,14 @@ export const AuthProvider = ({ children }) => {
 
 	const signout = async () => {
 		try {
-			const response = await fetch(
+			const response = await axios.post(
 				`${process.env.REACT_APP_API_URL}/sessions/signout`,
 				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
+					withCredentials: true,
 				}
 			);
-			// Update localStorage
 			localStorage.removeItem("currentUser");
 			localStorage.setItem("loading", JSON.stringify(false));
-
 			setLoading(false);
 			setCurrentUser(null);
 			return response;
@@ -104,19 +90,14 @@ export const AuthProvider = ({ children }) => {
 
 	const fetchBeers = async () => {
 		try {
-			const response = await fetch(
+			const response = await axios.get(
 				`${process.env.REACT_APP_API_URL}/beers-brewing/serve-beers`,
 				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
+					withCredentials: true,
 				}
 			);
-			if (response.ok) {
-				const data = await response.json();
-				setBeers(data);
+			if (response.status === 200) {
+				setBeers(response.data);
 			} else {
 				console.log("Not Authorised");
 				localStorage.removeItem("currentUser");
@@ -129,12 +110,12 @@ export const AuthProvider = ({ children }) => {
 			localStorage.setItem("loading", JSON.stringify(false));
 			setLoading(false);
 			setCurrentUser(null);
-			console.log(error);
+			// @ts-ignore
+			console.log(error.response.data);
 		}
 	};
 
 	useEffect(() => {
-		// Fetch beers
 		fetchBeers();
 	}, [currentUser]);
 

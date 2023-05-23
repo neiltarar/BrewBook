@@ -1,15 +1,28 @@
 import { FC } from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 interface Props {
-	currentUser: { name: string };
+	currentUser: { user: { name: string; id: number } };
 	beers: [{ id: number; name: string; description: string }];
 }
 
 export const MyBeers: FC<Props> = ({ currentUser, beers }) => {
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!currentUser) {
+			navigate("/signin");
+		}
+	}, [currentUser, navigate]);
+
+	if (!currentUser) {
+		return <p>Loading...</p>;
+	}
 	return (
 		<div className='text-center'>
 			<section className='p-10'>
-				<h1>Welcome, {currentUser.name}!</h1>
+				<h1>Welcome, {currentUser.user.name}!</h1>
 				<h2>Your beers:</h2>
 			</section>
 			<section className='p-10'>
