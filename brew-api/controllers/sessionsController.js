@@ -13,22 +13,33 @@ dotenv.config();
 export const signin = async (req, res) => {
 	const { email, password } = req.body;
 	const user = await findUserByEmail(email);
+
+	// if user exists and is activated by the admin
 	if (user && user.is_activated) {
 		const passwordHash = user["password_hash"];
+
+		// if user exists and the password is correct
 		if (user && (await bcrypt.compare(password, passwordHash))) {
+			// create access token
 			const accessToken = jwt.sign(
-				{ email },
+				{ userId: user.id, email },
 				process.env.ACCESS_TOKEN_SECRET_KEY,
 				{ expiresIn: "10m" }
 			);
+			// create refresh token
 			const refreshToken = jwt.sign(
-				{ email },
+				{ userId: user.id, email },
 				process.env.REFRESH_TOKEN_SECRET_KEY,
 				{ expiresIn: "48h" }
 			);
+
+			// delete any existing previous refresh tokens for the user and create a new one
 			await deleteRefreshTokenForUser(user.id);
 			const result = await saveRefreshToken(user.id, refreshToken);
+
+			// if new refresh token is saved on db with no issues
 			if (result) {
+				// set response object, cookies etc
 				res.cookie("accessToken", accessToken, {
 					httpOnly: true,
 					secure: false,
@@ -37,19 +48,23 @@ export const signin = async (req, res) => {
 					httpOnly: true,
 					secure: false,
 				});
-				res
-					.status(200)
-					.json({
-						message: "Successful Login",
-						user: { name: user.first_name, id: user.id },
-					});
+				res.status(200).json({
+					message: "Successful Login",
+					user: { name: user.first_name, id: user.id },
+				});
 			} else {
 				console.log("Error: Couldn't save the refresh token");
 				return res.status(500).json({ message: "Internal Server Error" }); // Add return statement here to prevent further execution
 			}
 		}
-	} else {
-		res.status(400).json({ message: "Unauthorised" });
+		// if the user exists but not yet activated
+	} else if (user && !user.is_activated) {
+		const passwordHash = user["password_hash"];
+		if (user && (await bcrypt.compare(password, passwordHash))) {
+			res.status(400).json({ message: "User is not activated by the admin" });
+		} else {
+			res.status(400).json({ message: "Unauthorised" });
+		}
 	}
 };
 
@@ -69,6 +84,5 @@ export const signout = async (req, res) => {
 	// Clear the access token and refresh token cookies
 	res.clearCookie("accessToken");
 	res.clearCookie("refreshToken");
-
 	res.status(200).json({ message: "Successfully logged out" });
 };

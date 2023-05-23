@@ -38,6 +38,7 @@ export const PourNew = () => {
 	const handleSubmit = (values: FormValues) => {
 		// @ts-ignore
 		values.userId = currentUser.user.id;
+		navigate("/my-beers");
 		addBeers(values);
 	};
 

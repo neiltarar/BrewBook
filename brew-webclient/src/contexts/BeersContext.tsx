@@ -27,7 +27,6 @@ export const BeersProvider = ({ children }) => {
 					withCredentials: true,
 				}
 			);
-			console.log("result: ", response);
 		} catch (error) {
 			console.log(error);
 		}

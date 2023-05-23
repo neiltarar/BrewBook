@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
 			setLoading(false);
 			setCurrentUser(null);
 			console.log(error);
-			return null;
+			return error;
 		}
 	};
 
@@ -73,6 +73,7 @@ export const AuthProvider = ({ children }) => {
 		try {
 			const response = await axios.post(
 				`${process.env.REACT_APP_API_URL}/sessions/signout`,
+				{}, // empy post req body, this is needed for the credentials to be read.
 				{
 					withCredentials: true,
 				}
@@ -120,6 +121,7 @@ export const AuthProvider = ({ children }) => {
 	}, [currentUser]);
 
 	const value = {
+		fetchBeers,
 		currentUser,
 		signup,
 		signin,
