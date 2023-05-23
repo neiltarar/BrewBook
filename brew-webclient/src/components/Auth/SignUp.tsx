@@ -48,11 +48,12 @@ export const SignUp: React.FC<{}> = () => {
 	const handleSubmit = async (values: MyFormValues) => {
 		setIsSubmitting(true);
 		const response = await signup(values);
-		if (!response.ok) {
+		if (response.status !== 200) {
+			console.log(response.status);
 			setResponseMessage("Account couldn't be created.");
 			setIsSubmitting(false);
 		} else {
-			const data = await response.json();
+			console.log(response.status);
 			setResponseMessage("Account Created");
 			setIsSubmitting(false);
 		}

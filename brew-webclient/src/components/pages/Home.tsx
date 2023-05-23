@@ -9,13 +9,17 @@ export const Home = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	// @ts-ignore
-	const { currentUser, beers } = useAuth();
+	const { currentUser, beers, fetchBeers } = useAuth();
 
 	useEffect(() => {
 		if (!currentUser) {
 			navigate("/signin");
 		}
 	}, [currentUser, navigate]);
+
+	useEffect(() => {
+		fetchBeers();
+	}, []);
 
 	if (!currentUser) {
 		return <p>Loading...</p>;

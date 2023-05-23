@@ -1,5 +1,8 @@
-import React from "react";
+import { useBeerContext } from "../../contexts/BeersContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { Formik, Form, Field } from "formik";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import * as Yup from "yup";
 
 interface FormValues {
@@ -8,12 +11,23 @@ interface FormValues {
 	location: string;
 }
 
+interface Props {
+	currentUser: { user: { name: string; id: number } };
+}
+
 export const PourNew = () => {
+	const navigate = useNavigate();
+
 	const initialValues: FormValues = {
 		beerName: "",
 		notes: "",
 		location: "",
 	};
+
+	// @ts-ignore
+	const { addBeers } = useBeerContext();
+	// @ts-ignore
+	const { currentUser } = useAuth();
 
 	const validationSchema = Yup.object({
 		beerName: Yup.string().required("Beer name is required"),
@@ -22,9 +36,21 @@ export const PourNew = () => {
 	});
 
 	const handleSubmit = (values: FormValues) => {
-		// Here, you can perform actions like saving the form data or making API calls
-		console.log(values);
+		// @ts-ignore
+		values.userId = currentUser.user.id;
+		navigate("/my-beers");
+		addBeers(values);
 	};
+
+	useEffect(() => {
+		if (!currentUser) {
+			navigate("/signin");
+		}
+	}, [currentUser, navigate]);
+
+	if (!currentUser) {
+		return <p>Loading...</p>;
+	}
 
 	return (
 		<div className='max-w-md mx-auto mt-4'>

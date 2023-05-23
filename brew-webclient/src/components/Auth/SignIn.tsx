@@ -38,7 +38,7 @@ export const SignIn: React.FC<{}> = () => {
 		// @ts-ignore
 		const response = await signin(values);
 		if (response.status !== 200) {
-			setResponseMessage("Login failed.");
+			setResponseMessage(response.response.data.message);
 		} else {
 			const data = await response;
 			setResponseMessage("Logged in");

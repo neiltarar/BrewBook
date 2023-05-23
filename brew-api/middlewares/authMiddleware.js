@@ -48,9 +48,8 @@ export const authenticateToken = async (req, res, next) => {
 					return res.sendStatus(403); // If the token is not valid, return 403 (Forbidden)
 				}
 			} else {
-				req.user = user;
-				const fetchedUser = await findUserByEmail(user.email); // Fetch the user information from the database
-				res.user = fetchedUser.first_name; // Include the user information in the response
+				// const fetchedUser = await findUserByEmail(user.email); // Fetch the user information from the database
+				// res.user = fetchedUser.first_name; // Include the user information in the response
 				next(); // If everything's good, forward the request to the next handler
 			}
 		}

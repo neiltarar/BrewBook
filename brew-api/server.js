@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/users", userRoutes);
 app.use("/sessions", sessionsRoutes);
 app.use("/beers-brewing", authenticateToken, beersRoutes);
-app.use("/", (req, res) => {
+app.use("/", authenticateToken, (req, res) => {
 	res.send("brewery is open :)");
 });
 
