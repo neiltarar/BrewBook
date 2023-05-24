@@ -48,7 +48,7 @@ export const MyBeers: FC<Props> = ({ currentUser, beers }) => {
 								<p> Notes: {beer.notes}</p>
 								{currentUser.user.id === beer.user_id && (
 									<div className='flex justify-around m-10'>
-										<Link to={`/tweak-beer?whichOne=${beer.id}`}> edit </Link>
+										<Link to={`/tweak-beer/${beer.id}`}> edit </Link>
 										<button> delete </button>
 									</div>
 								)}

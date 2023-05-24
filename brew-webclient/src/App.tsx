@@ -10,8 +10,9 @@ import { BeersProvider } from "./contexts/BeersContext";
 import { SignUp } from "./components/Auth/SignUp";
 import { SignIn } from "./components/Auth/SignIn";
 import { Home } from "./components/pages/Home";
-import DefaultLayout from "./components/Layout/DefaultLayout";
 import { PourNew } from "./components/Beers/PourNew";
+import { EditBeers } from "./components/Beers/EditBeers";
+import DefaultLayout from "./components/Layout/DefaultLayout";
 
 function App() {
 	return (
@@ -42,6 +43,14 @@ function App() {
 							element={
 								<DefaultLayout>
 									<PourNew />
+								</DefaultLayout>
+							}
+						/>
+						<Route
+							path='/tweak-beer/:beerId'
+							element={
+								<DefaultLayout>
+									<EditBeers />
 								</DefaultLayout>
 							}
 						/>

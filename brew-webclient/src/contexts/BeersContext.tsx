@@ -32,8 +32,15 @@ export const BeersProvider = ({ children }) => {
 		}
 	};
 
+	// @ts-ignore
+	const editBeer = async (values) => {
+		const result = await axios.put(
+			`${process.env.REACT_APP_API_URL}/beers-brewing/tweak-beer`
+		);
+	};
 	const value = {
 		addBeers,
+		editBeer,
 	};
 
 	return (
