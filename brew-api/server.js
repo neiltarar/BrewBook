@@ -14,10 +14,11 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 
+app.use(express.static("build"));
 app.use("/users", userRoutes);
 app.use("/sessions", sessionsRoutes);
 app.use("/beers-brewing", authenticateToken, beersRoutes);
-app.use("/", authenticateToken, (req, res) => {
+app.use("/check", authenticateToken, (req, res) => {
 	res.send("brewery is open :)");
 });
 
