@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
 		const storedLoadingState = localStorage.getItem("loading");
 		return storedLoadingState ? JSON.parse(storedLoadingState) : false;
 	});
+
 	const [beers, setBeers] = useState([]);
 
 	// @ts-ignore
@@ -91,6 +92,7 @@ export const AuthProvider = ({ children }) => {
 
 	const fetchBeers = async () => {
 		try {
+			setLoading(true);
 			const response = await axios.get(
 				`${process.env.REACT_APP_API_URL}/beers-brewing/serve-beers`,
 				{
@@ -113,6 +115,8 @@ export const AuthProvider = ({ children }) => {
 			setCurrentUser(null);
 			// @ts-ignore
 			console.log(error.response.data);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -127,6 +131,7 @@ export const AuthProvider = ({ children }) => {
 		signin,
 		signout,
 		beers,
+		loading,
 	};
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

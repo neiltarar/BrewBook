@@ -23,7 +23,7 @@ export const EditBeers = () => {
 	// @ts-ignore
 	const { editBeer } = useBeerContext();
 	// @ts-ignore
-	const { currentUser, beers, fetchBeers } = useAuth();
+	const { loading, currentUser, beers, fetchBeers } = useAuth();
 
 	// @ts-ignore
 	const beerToTweak = beers.find((beer) => beer.id === Number(beerId));
@@ -56,6 +56,8 @@ export const EditBeers = () => {
 	useEffect(() => {
 		if (!currentUser) {
 			navigate("/signin");
+		} else {
+			fetchBeers();
 		}
 	}, [currentUser, navigate]);
 
@@ -63,7 +65,7 @@ export const EditBeers = () => {
 		fetchBeers();
 	}, []);
 
-	if (!currentUser) {
+	if (!currentUser || loading) {
 		return <p>Loading...</p>;
 	}
 

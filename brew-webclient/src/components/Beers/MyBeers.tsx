@@ -2,6 +2,7 @@ import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface Props {
 	currentUser: { user: { name: string; id: number } };
@@ -20,6 +21,8 @@ interface Props {
 
 export const MyBeers: FC<Props> = ({ currentUser, beers }) => {
 	const navigate = useNavigate();
+	//@ts-ignore
+	const { loading } = useAuth();
 	const myBeers = beers.filter((beer) => beer.user_id === currentUser.user.id);
 	useEffect(() => {
 		if (!currentUser) {
@@ -27,7 +30,7 @@ export const MyBeers: FC<Props> = ({ currentUser, beers }) => {
 		}
 	}, [currentUser, navigate]);
 
-	if (!currentUser) {
+	if (!currentUser || loading) {
 		return <p>Loading...</p>;
 	}
 	return (
