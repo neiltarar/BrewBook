@@ -10,6 +10,7 @@ interface FormValues {
 	beerName: string;
 	notes: string;
 	location: string;
+	date_consumed: string;
 }
 
 interface Props {
@@ -27,17 +28,19 @@ export const EditBeers = () => {
 
 	// @ts-ignore
 	const beerToTweak = beers.find((beer) => beer.id === Number(beerId));
-
+	console.log(beerToTweak);
 	const initialValues: FormValues = beerToTweak
 		? {
 				beerName: beerToTweak.name,
 				notes: beerToTweak.notes,
 				location: beerToTweak.place_consumed,
+				date_consumed: beerToTweak.date_consumed,
 		  }
 		: {
 				beerName: "",
 				notes: "",
 				location: "",
+				date_consumed: "",
 		  };
 
 	const validationSchema = Yup.object({
@@ -49,8 +52,9 @@ export const EditBeers = () => {
 	const handleSubmit = (values: FormValues) => {
 		// @ts-ignore
 		values.userId = currentUser.user.id;
+		editBeer(values, beerId);
+
 		navigate("/my-beers");
-		editBeer(values);
 	};
 
 	useEffect(() => {
@@ -112,6 +116,18 @@ export const EditBeers = () => {
 								id='location'
 								name='location'
 								placeholder='Enter location'
+								className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500'
+							/>
+						</div>
+						<div className='mb-4'>
+							<label htmlFor='location' className='block font-semibold'>
+								When You Drank It
+							</label>
+							<Field
+								type='text'
+								id='date_consumed'
+								name='date_consumed'
+								placeholder='Enter date'
 								className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500'
 							/>
 						</div>

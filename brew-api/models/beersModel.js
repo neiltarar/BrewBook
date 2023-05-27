@@ -1,20 +1,45 @@
 import db from "../db/db.js";
 
-export const addBeer = async ({ beerName, notes, location, userId }) => {
-	try {
-		const date = new Date();
-		const result = await db(
-			`INSERT INTO beers (name, producer_website, place_consumed, date_consumed, notes, user_id)
-			 VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-			[beerName, "no website yet", location, date, notes, userId]
-		);
-		return result;
-	} catch (error) {}
-};
+export const BeerModels = {
+	addBeer: async ({ beerName, notes, location, userId }) => {
+		try {
+			const date = new Date();
+			const result = await db(
+				`INSERT INTO beers (name, producer_website, place_consumed, date_consumed, notes, user_id)
+				 VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+				[beerName, "no website yet", location, date, notes, userId]
+			);
+			return result;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+	},
 
-export const getAllBeers = async () => {
-	const result = await db(`
-		SELECT * FROM beers;
-	`);
-	return result;
+	getAllBeers: async () => {
+		try {
+			const result = await db(`
+			SELECT * FROM beers;
+		`);
+			return result;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+	},
+
+	editBeerById: async (beerId, values) => {
+		const { beerName, notes, location, date_consumed, userId } = values;
+		console.log(beerName, notes, location, userId);
+		try {
+			const result = await db(
+				`UPDATE beers SET name = $1, notes = $2, producer_website = $3, place_consumed=$4, date_consumed = $5 WHERE id = $6 AND user_id = $7 RETURNING *`,
+				[beerName, notes, "N/A", location, date_consumed, beerId, userId]
+			);
+			return true;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+	},
 };
