@@ -14,8 +14,17 @@ export const BeersControllers = {
 
 	addBeers: async (req, res) => {
 		try {
-			const result = await BeerModels.addBeer(req.body);
-			res.status(200).json({ message: "beer is succesfully added" });
+			const requestBodyUserId = req.body.userId;
+			const userIdExtractedFromCookies = req.user.userId;
+			// check if the userId has been manipulated on the browser
+			// if there is a malicious userId manipulation
+			if (requestBodyUserId === userIdExtractedFromCookies) {
+				const result = await BeerModels.addBeer(req.body);
+				res.status(200).json({ message: "beer is succesfully added" });
+			} else {
+				console.log("user id has been manipulated while making the request");
+				res.status(403).json({ message: "Unauthorized request" });
+			}
 		} catch (error) {
 			res.status(500).json({
 				message: "Internal Server Error",
@@ -33,8 +42,8 @@ export const BeersControllers = {
 			// check if the userId has been manipulated on the browser
 			// if there is a malicious userId manipulation
 			if (requestBodyUserId === userIdExtractedFromCookies) {
-				const beer = await BeerModels.editBeerById(editedBeerId, values);
-				if (!beer) {
+				const result = await BeerModels.editBeerById(editedBeerId, values);
+				if (!result) {
 					res
 						.status(404)
 						.json({ message: `No beer found with id ${editedBeerId}` });
@@ -52,6 +61,37 @@ export const BeersControllers = {
 			console.log(error);
 			res.status(500).json({
 				message: `Error editing beer with id ${editedBeerId}: ${error.message}`,
+			});
+		}
+	},
+
+	deleteBeer: async (req, res) => {
+		try {
+			const requestBodyUserId = req.body.userId;
+			const userIdExtractedFromCookies = req.user.userId;
+			const deleteReqBeerId = req.params.id;
+			// check if the userId has been manipulated on the browser
+			// if there is a malicious userId manipulation
+			if (requestBodyUserId === userIdExtractedFromCookies) {
+				const result = await BeerModels.deleteBeerById(deleteReqBeerId);
+				if (!result) {
+					res
+						.status(404)
+						.json({ message: `No beer found with id ${deleteReqBeerId}` });
+					return;
+				} else {
+					res.status(200).json({
+						message: `Beer with id ${deleteReqBeerId} has been successfully deleted`,
+					});
+				}
+			} else {
+				console.log("user id has been manipulated while making the request");
+				res.status(403).json({ message: "Unauthorized request" });
+			}
+		} catch (error) {
+			console.log(error);
+			res.status(500).json({
+				message: `Error deleting beer with id ${deleteReqBeerId}: ${error.message}`,
 			});
 		}
 	},
