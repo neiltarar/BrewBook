@@ -28,7 +28,6 @@ export const EditBeers = () => {
 
 	// @ts-ignore
 	const beerToTweak = beers.find((beer) => beer.id === Number(beerId));
-	console.log(beerToTweak);
 	const initialValues: FormValues = beerToTweak
 		? {
 				beerName: beerToTweak.name,
@@ -53,7 +52,6 @@ export const EditBeers = () => {
 		// @ts-ignore
 		values.userId = currentUser.user.id;
 		editBeer(values, beerId);
-
 		navigate("/my-beers");
 	};
 
@@ -64,10 +62,6 @@ export const EditBeers = () => {
 			fetchBeers();
 		}
 	}, [currentUser, navigate]);
-
-	useEffect(() => {
-		fetchBeers();
-	}, []);
 
 	if (!currentUser || loading) {
 		return <p>Loading...</p>;

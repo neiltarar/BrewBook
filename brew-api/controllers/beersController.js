@@ -25,23 +25,29 @@ export const BeersControllers = {
 	},
 
 	editBeer: async (req, res) => {
+		const requestBodyUserId = req.body.userId;
+		const userIdExtractedFromCookies = req.user.userId;
 		const editedBeerId = req.params.id;
 		const values = req.body;
 		try {
-			const beer = await BeerModels.editBeerById(editedBeerId, values);
-			if (!beer) {
-				res
-					.status(404)
-					.json({ message: `No beer found with id ${editedBeerId}` });
-				return;
-			} else {
-				res
-					.status(200)
-					.json({
+			// check if the userId has been manipulated on the browser
+			// if there is a malicious userId manipulation
+			if (requestBodyUserId === userIdExtractedFromCookies) {
+				const beer = await BeerModels.editBeerById(editedBeerId, values);
+				if (!beer) {
+					res
+						.status(404)
+						.json({ message: `No beer found with id ${editedBeerId}` });
+					return;
+				} else {
+					res.status(200).json({
 						message: `Beer with id ${editedBeerId} has been successfully edited`,
 					});
+				}
+			} else {
+				console.log("user id has been manipulated while making the request");
+				res.status(403).json({ message: "Unauthorized request" });
 			}
-			// Edit the beer...
 		} catch (error) {
 			console.log(error);
 			res.status(500).json({

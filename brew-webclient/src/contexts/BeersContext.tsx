@@ -42,7 +42,7 @@ export const BeersProvider = ({ children }) => {
 					{ withCredentials: true }
 				)
 				.then((response) => {
-					console.log(response);
+					console.log(response.data.message);
 				});
 		} catch (error) {
 			//@ts-ignore

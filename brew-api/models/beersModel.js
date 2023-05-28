@@ -30,7 +30,6 @@ export const BeerModels = {
 
 	editBeerById: async (beerId, values) => {
 		const { beerName, notes, location, date_consumed, userId } = values;
-		console.log(beerName, notes, location, userId);
 		try {
 			const result = await db(
 				`UPDATE beers SET name = $1, notes = $2, producer_website = $3, place_consumed=$4, date_consumed = $5 WHERE id = $6 AND user_id = $7 RETURNING *`,
