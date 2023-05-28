@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface Props {
 	currentUser: { user: { name: string; id: number } };
@@ -19,14 +20,15 @@ interface Props {
 
 export const AllBeers: FC<Props> = ({ currentUser, beers }) => {
 	const navigate = useNavigate();
-
+	//@ts-ignore
+	const { loading } = useAuth();
 	useEffect(() => {
 		if (!currentUser) {
 			navigate("/signin");
 		}
 	}, [currentUser, navigate]);
 
-	if (!currentUser) {
+	if (!currentUser || loading) {
 		return <p>Loading...</p>;
 	}
 

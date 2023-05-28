@@ -6,9 +6,6 @@ import {
 	deleteRefreshToken,
 	deleteRefreshTokenForUser,
 } from "../models/sessionModel.js";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export const signin = async (req, res) => {
 	const { email, password } = req.body;
@@ -22,13 +19,14 @@ export const signin = async (req, res) => {
 		if (user && (await bcrypt.compare(password, passwordHash))) {
 			// create access token
 			const accessToken = jwt.sign(
-				{ userId: user.id, email },
+				{ userId: user.id, email: user.email },
 				process.env.ACCESS_TOKEN_SECRET_KEY,
-				{ expiresIn: "10m" }
+				{ expiresIn: "1m" }
 			);
+
 			// create refresh token
 			const refreshToken = jwt.sign(
-				{ userId: user.id, email },
+				{ userId: user.id, email: user.email },
 				process.env.REFRESH_TOKEN_SECRET_KEY,
 				{ expiresIn: "48h" }
 			);

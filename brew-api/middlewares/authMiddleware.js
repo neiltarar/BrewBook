@@ -1,10 +1,5 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import { findRefreshToken } from "../models/sessionModel.js";
-import { findUserByEmail } from "../models/userModel.js";
-
-// Load the environment variables
-dotenv.config();
 
 export const authenticateToken = async (req, res, next) => {
 	const accessToken = req.cookies.accessToken;
@@ -23,34 +18,34 @@ export const authenticateToken = async (req, res, next) => {
 					if (!storedRefreshToken) return res.sendStatus(403);
 					jwt.verify(
 						refreshToken,
-						process.env.REFRESH_TOKEN_SECRET,
+						process.env.REFRESH_TOKEN_SECRET_KEY,
 						(err, user) => {
-							if (err)
+							if (err) {
+								console.log("error message for the refresh token: ", err);
 								return res
 									.status(403)
 									.json({ message: "Session expired, please log in again" }); // If refresh token is not valid, return 403 (Forbidden)
+							}
 
 							// Generate and send a new access token
 							const newAccessToken = jwt.sign(
-								{ email: user.email },
-								process.env.ACCESS_TOKEN_SECRET,
-								{ expiresIn: "10m" }
+								{ userId: user.userId, email: user.email },
+								process.env.ACCESS_TOKEN_SECRET_KEY,
+								{ expiresIn: "1m" }
 							);
 							res.cookie("accessToken", newAccessToken, {
 								httpOnly: true,
-								secure: true,
+								secure: false,
 							});
-							req.user = user;
-							next(); // Call next() here to continue to the next middleware/route handler
+							next();
 						}
 					);
 				} else {
 					return res.sendStatus(403); // If the token is not valid, return 403 (Forbidden)
 				}
 			} else {
-				// const fetchedUser = await findUserByEmail(user.email); // Fetch the user information from the database
-				// res.user = fetchedUser.first_name; // Include the user information in the response
-				next(); // If everything's good, forward the request to the next handler
+				req.user = user; // adding the authenticated user's info extracted from the cookie to req
+				next();
 			}
 		}
 	);
