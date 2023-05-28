@@ -1,6 +1,14 @@
 import { createContext, useContext } from "react";
 import axios from "axios";
 
+console.log(process.env.NODE_ENV);
+const API_URL =
+	process.env.NODE_ENV === "production"
+		? process.env.REACT_APP_API_URL_DEPLOY
+		: process.env.REACT_APP_API_URL_DEV;
+
+console.log(API_URL)
+
 // @ts-ignore
 const BeersContext = createContext();
 
@@ -21,7 +29,7 @@ export const BeersProvider = ({ children }) => {
 				location: location,
 			};
 			const response = await axios.post(
-				`${process.env.REACT_APP_API_URL}/beers-brewing/pour-new`,
+				`${API_URL}/beers-brewing/pour-new`,
 				payloadPostData,
 				{
 					withCredentials: true,
@@ -37,11 +45,9 @@ export const BeersProvider = ({ children }) => {
 	const editBeer = async (values, id) => {
 		try {
 			await axios
-				.put(
-					`${process.env.REACT_APP_API_URL}/beers-brewing/tweak-beer/${id}`,
-					values,
-					{ withCredentials: true }
-				)
+				.put(`${API_URL}/beers-brewing/tweak-beer/${id}`, values, {
+					withCredentials: true,
+				})
 				.then((response) => {
 					console.log(response.data.message);
 				});
@@ -55,13 +61,10 @@ export const BeersProvider = ({ children }) => {
 	const deleteBeer = async (userId, beerId) => {
 		try {
 			await axios
-				.delete(
-					`${process.env.REACT_APP_API_URL}/beers-brewing/throw-beer/${beerId}`,
-					{
-						data: { userId: userId },
-						withCredentials: true,
-					}
-				)
+				.delete(`${API_URL}/beers-brewing/throw-beer/${beerId}`, {
+					data: { userId: userId },
+					withCredentials: true,
+				})
 				.then((response) => {
 					console.log(response.data.message);
 				});

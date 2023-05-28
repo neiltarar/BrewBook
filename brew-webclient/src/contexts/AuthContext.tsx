@@ -3,6 +3,10 @@ import axios from "axios";
 
 // @ts-ignore
 const AuthContext = createContext();
+const API_URL =
+	process.env.NODE_ENV === "production"
+		? process.env.REACT_APP_API_URL_DEPLOY
+		: process.env.REACT_APP_API_URL_DEV;
 
 export const useAuth = () => {
 	return useContext(AuthContext);
@@ -24,13 +28,9 @@ export const AuthProvider = ({ children }) => {
 	// @ts-ignore
 	const signup = async (values) => {
 		try {
-			const response = await axios.post(
-				`${process.env.REACT_APP_API_URL}/users/signup`,
-				values,
-				{
-					withCredentials: true,
-				}
-			);
+			const response = await axios.post(`${API_URL}/users/signup`, values, {
+				withCredentials: true,
+			});
 			return response;
 		} catch (error) {
 			console.log(error);
@@ -41,13 +41,9 @@ export const AuthProvider = ({ children }) => {
 	// @ts-ignore
 	const signin = async (values) => {
 		try {
-			const response = await axios.post(
-				`${process.env.REACT_APP_API_URL}/sessions/signin`,
-				values,
-				{
-					withCredentials: true,
-				}
-			);
+			const response = await axios.post(`${API_URL}/sessions/signin`, values, {
+				withCredentials: true,
+			});
 			if (response.status === 200) {
 				setCurrentUser({
 					user: { name: response.data.user.name, id: response.data.user.id },
@@ -73,7 +69,7 @@ export const AuthProvider = ({ children }) => {
 	const signout = async () => {
 		try {
 			const response = await axios.post(
-				`${process.env.REACT_APP_API_URL}/sessions/signout`,
+				`${API_URL}/sessions/signout`,
 				{}, // empy post req body, this is needed for the credentials to be read.
 				{
 					withCredentials: true,
@@ -93,12 +89,9 @@ export const AuthProvider = ({ children }) => {
 	const fetchBeers = async () => {
 		try {
 			setLoading(true);
-			const response = await axios.get(
-				`${process.env.REACT_APP_API_URL}/beers-brewing/serve-beers`,
-				{
-					withCredentials: true,
-				}
-			);
+			const response = await axios.get(`${API_URL}/beers-brewing/serve-beers`, {
+				withCredentials: true,
+			});
 			if (response.status === 200) {
 				setBeers(response.data);
 			} else {
