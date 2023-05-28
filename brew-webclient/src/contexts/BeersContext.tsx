@@ -14,7 +14,7 @@ export const BeersProvider = ({ children }) => {
 	const addBeers = async (values) => {
 		try {
 			const { beerName, notes, location, userId } = values;
-			const payloadPostDatat = {
+			const payloadPostData = {
 				userId: userId,
 				beerName: beerName,
 				notes: notes,
@@ -22,13 +22,14 @@ export const BeersProvider = ({ children }) => {
 			};
 			const response = await axios.post(
 				`${process.env.REACT_APP_API_URL}/beers-brewing/pour-new`,
-				payloadPostDatat,
+				payloadPostData,
 				{
 					withCredentials: true,
 				}
 			);
 		} catch (error) {
-			console.log(error);
+			//@ts-ignore
+			console.log(error.response.data.message);
 		}
 	};
 
