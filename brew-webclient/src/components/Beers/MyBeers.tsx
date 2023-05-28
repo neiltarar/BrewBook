@@ -1,8 +1,9 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useBeerContext } from "../../contexts/BeersContext";
 
 interface Props {
 	currentUser: { user: { name: string; id: number } };
@@ -23,12 +24,24 @@ export const MyBeers: FC<Props> = ({ currentUser, beers }) => {
 	const navigate = useNavigate();
 	//@ts-ignore
 	const { loading } = useAuth();
-	const myBeers = beers.filter((beer) => beer.user_id === currentUser.user.id);
+	//@ts-ignore
+	const { deleteBeer } = useBeerContext();
+	const [myBeers, setMyBeers] = useState([]);
+
 	useEffect(() => {
 		if (!currentUser) {
 			navigate("/signin");
+		} else {
+			//@ts-ignore
+			setMyBeers(beers.filter((beer) => beer.user_id === currentUser.user.id));
 		}
-	}, [currentUser, navigate]);
+	}, [currentUser, navigate, beers]);
+
+	const handleDelete = (beerId: number) => {
+		deleteBeer(currentUser.user.id, beerId);
+		//@ts-ignore
+		setMyBeers((prevBeers) => prevBeers.filter((beer) => beer.id !== beerId));
+	};
 
 	if (!currentUser || loading) {
 		return <p>Loading...</p>;
@@ -52,7 +65,9 @@ export const MyBeers: FC<Props> = ({ currentUser, beers }) => {
 								{currentUser.user.id === beer.user_id && (
 									<div className='flex justify-around m-10'>
 										<Link to={`/tweak-beer/${beer.id}`}> edit </Link>
-										<button> delete </button>
+										<button onClick={() => handleDelete(beer.id)}>
+											delete
+										</button>
 									</div>
 								)}
 							</li>
