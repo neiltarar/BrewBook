@@ -7,7 +7,7 @@ const API_URL =
 		? process.env.REACT_APP_API_URL_DEPLOY
 		: process.env.REACT_APP_API_URL_DEV;
 
-console.log(API_URL)
+console.log(API_URL);
 
 // @ts-ignore
 const BeersContext = createContext();
@@ -21,16 +21,20 @@ export const BeersProvider = ({ children }) => {
 	// @ts-ignore
 	const addBeers = async (values) => {
 		try {
-			const { beerName, notes, location, userId } = values;
-			const payloadPostData = {
-				userId: userId,
-				beerName: beerName,
-				notes: notes,
-				location: location,
-			};
+			console.log("values: ", values);
+			let formData = new FormData();
+			Object.entries(values).forEach(([key, value]) => {
+				console.log(key, value);
+				//@ts-ignore
+				formData.append(key, value);
+			});
+			//@ts-ignore
+			for (let pair of formData.entries()) {
+				console.log(pair[0] + ", " + pair[1]);
+			}
 			const response = await axios.post(
 				`${API_URL}/beers-brewing/pour-new`,
-				payloadPostData,
+				formData,
 				{
 					withCredentials: true,
 				}

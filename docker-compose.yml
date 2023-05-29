@@ -1,0 +1,57 @@
+version: "3.8"
+networks:
+  brew-book:
+services:
+  db:
+    profiles:
+      - all
+      - api
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=brew_book
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - ./pg-data/postgres-data:/var/lib/postgresql/data
+    networks:
+      - brew-book
+
+  api:
+    profiles:
+      - all
+      - api
+    restart: always
+    build:
+      context: ./brew-api
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001" # API Port
+    volumes:
+      - ./brew-api/:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - brew-book
+    env_file:
+      - ./brew-api/.env
+    depends_on:
+      - db
+
+  dashboard:
+    profiles:
+      - web
+      - all
+    restart: always
+    build:
+      context: ./brew-webclient
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./brew-webclient/:/usr/src/app
+    env_file:
+      - ./brew-webclient/.env
+    networks:
+      - brew-book

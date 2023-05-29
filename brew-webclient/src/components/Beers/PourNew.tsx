@@ -2,7 +2,7 @@ import { useBeerContext } from "../../contexts/BeersContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import * as Yup from "yup";
 
 interface FormValues {
@@ -17,7 +17,7 @@ interface Props {
 
 export const PourNew = () => {
 	const navigate = useNavigate();
-
+	const [selectedImage, setSelectedImage] = useState<File | null>(null);
 	const initialValues: FormValues = {
 		beerName: "",
 		notes: "",
@@ -35,9 +35,15 @@ export const PourNew = () => {
 		location: Yup.string().required("Location is required"),
 	});
 
+	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSelectedImage(e.target.files ? e.target.files[0] : null);
+	};
+
 	const handleSubmit = (values: FormValues) => {
 		// @ts-ignore
 		values.userId = currentUser.user.id;
+		//@ts-ignore
+		values.image = selectedImage;
 		navigate("/my-beers");
 		addBeers(values);
 	};
@@ -95,6 +101,18 @@ export const PourNew = () => {
 								id='location'
 								name='location'
 								placeholder='Enter location'
+								className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500'
+							/>
+						</div>
+						<div className='mb-4'>
+							<label htmlFor='image' className='block font-semibold'>
+								Image
+							</label>
+							<input
+								type='file'
+								id='image'
+								name='image'
+								onChange={handleImageChange}
 								className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500'
 							/>
 						</div>
