@@ -13,12 +13,25 @@ export const BeersControllers = {
 	},
 
 	addBeers: async (req, res) => {
+		console.log("here");
 		try {
+			const image = req.file;
+			const url = req.protocol + "://" + req.get("host");
+			console.log(url);
+			console.log("body: ", req.body);
+
 			const requestBodyUserId = req.body.userId;
+			console.log("requestBodyUserId: ", requestBodyUserId);
+
 			const userIdExtractedFromCookies = req.user.userId;
+			console.log("userIdExtractedFromCookies: ", userIdExtractedFromCookies);
+
+			console.log(requestBodyUserId === userIdExtractedFromCookies);
 			// check if the userId has been manipulated on the browser
 			// if there is a malicious userId manipulation
-			if (requestBodyUserId === userIdExtractedFromCookies) {
+			if (Number(requestBodyUserId) === Number(userIdExtractedFromCookies)) {
+				const image = req.file;
+				console.log(image);
 				const result = await BeerModels.addBeer(req.body);
 				res.status(200).json({ message: "beer is succesfully added" });
 			} else {
