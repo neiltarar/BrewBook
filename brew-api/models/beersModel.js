@@ -22,7 +22,7 @@ export const BeerModels = {
 	getAllBeers: async () => {
 		try {
 			const result = await db(`
-			SELECT * FROM beers;
+			SELECT * FROM beers ORDER BY name ASC;
 		`);
 			return result;
 		} catch (error) {

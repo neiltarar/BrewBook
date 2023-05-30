@@ -5,6 +5,11 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useBeerContext } from "../../contexts/BeersContext";
 import { Link } from "react-router-dom";
 
+const API_URL =
+	process.env.NODE_ENV === "production"
+		? process.env.REACT_APP_API_URL_DEPLOY
+		: process.env.REACT_APP_API_URL_DEV;
+
 interface Props {
 	currentUser: { user: { name: string; id: number } };
 	beers: [
@@ -63,6 +68,9 @@ export const AllBeers: FC<Props> = ({ currentUser, beers }) => {
 								<p> I drank it at: {beer.place_consumed}</p>
 								<p> Date: {beer.date_consumed}</p>
 								<p> Notes: {beer.notes}</p>
+								<div>
+									<img src={`${API_URL}/${beer.images}`} alt={beer.name} />
+								</div>
 								{currentUser.user.id === beer.user_id && (
 									<div className='flex justify-around m-10'>
 										<Link to={`/tweak-beer/${beer.id}`}> edit </Link>
