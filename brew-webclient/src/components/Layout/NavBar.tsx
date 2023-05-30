@@ -13,7 +13,7 @@ export const Navbar: FC = () => {
 					<div className='flex items-center justify-between py-3 md:py-5 md:block'>
 						<a href='/'>
 							<img
-								src='/images/beerLogo.png'
+								src='/image-assets/beerLogo.png'
 								className='w-24 h-24'
 								alt='Beer Logo'
 							/>

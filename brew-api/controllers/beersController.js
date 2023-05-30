@@ -32,7 +32,10 @@ export const BeersControllers = {
 			if (Number(requestBodyUserId) === Number(userIdExtractedFromCookies)) {
 				const image = req.file;
 				console.log(image);
-				const result = await BeerModels.addBeer(req.body);
+				const result = await BeerModels.addBeer({
+					...req.body,
+					imageName: req.file.filename,
+				});
 				res.status(200).json({ message: "beer is succesfully added" });
 			} else {
 				console.log("user id has been manipulated while making the request");

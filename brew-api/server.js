@@ -22,9 +22,14 @@ const imageStorage = multer.diskStorage({
 		cb(null, DIR);
 	},
 	filename: (req, file, cb) => {
-		console.log(file.originalname);
-		// const fileName = file.originalname.toLocaleLowerCase.split(" ").join("-");
-		cb(null, uuidv4() + "-" + file.originalname);
+		const currentDate = new Date().toISOString().split("T")[0]; // Get the current date in YYYY-MM-DD format
+		const uniqueId = uuidv4(); // Generate a unique identifier using UUIDv4
+
+		const originalFileName = file.originalname; // Get the original file name
+		const fileExtension = path.extname(originalFileName); // Extract the file extension using the path module
+
+		const filename = `${currentDate}-${uniqueId}${fileExtension}`; // Combine the date, unique ID, and file extension
+		cb(null, filename);
 	},
 });
 
@@ -41,6 +46,9 @@ var upload = multer({
 			cb(null, false);
 			return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
 		}
+	},
+	limits: {
+		fileSize: 5000000, // limit file size to 5MB
 	},
 });
 

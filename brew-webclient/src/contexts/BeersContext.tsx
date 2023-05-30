@@ -1,13 +1,10 @@
 import { createContext, useContext } from "react";
 import axios from "axios";
 
-console.log(process.env.NODE_ENV);
 const API_URL =
 	process.env.NODE_ENV === "production"
 		? process.env.REACT_APP_API_URL_DEPLOY
 		: process.env.REACT_APP_API_URL_DEV;
-
-console.log(API_URL);
 
 // @ts-ignore
 const BeersContext = createContext();
