@@ -69,7 +69,17 @@ export const AllBeers: FC<Props> = ({ currentUser, beers }) => {
 								<p> Date: {beer.date_consumed}</p>
 								<p> Notes: {beer.notes}</p>
 								<div>
-									<img src={`${API_URL}/${beer.images}`} alt={beer.name} />
+									{process.env.NODE_ENV === "production" ? (
+										<img
+											src={`${API_URL}/images/${beer.images}`}
+											alt={beer.name}
+										/>
+									) : (
+										<img
+											src={`http://localhost/images/${beer.images}`}
+											alt={beer.name}
+										/>
+									)}
 								</div>
 								{currentUser.user.id === beer.user_id && (
 									<div className='flex justify-around m-10'>
