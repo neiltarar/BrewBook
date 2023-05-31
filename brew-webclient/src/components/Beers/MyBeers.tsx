@@ -83,7 +83,7 @@ export const MyBeers: FC<Props> = ({ currentUser, beers }) => {
 									) : (
 										<img
 											className='mx-auto h-48 w-48 object-cover'
-											src={`http://172.18.0.5/images/${beer.images}`}
+											src={`http://localhost/images/${beer.images}`}
 											alt={beer.name}
 										/>
 									)}
