@@ -15,23 +15,23 @@ export const BeersControllers = {
 	addBeers: async (req, res) => {
 		console.log("here");
 		try {
-			const image = req.file;
-			const url = req.protocol + "://" + req.get("host");
-			console.log(url);
-			console.log("body: ", req.body);
-
 			const requestBodyUserId = req.body.userId;
-			console.log("requestBodyUserId: ", requestBodyUserId);
-
 			const userIdExtractedFromCookies = req.user.userId;
-			console.log("userIdExtractedFromCookies: ", userIdExtractedFromCookies);
 
-			console.log(requestBodyUserId === userIdExtractedFromCookies);
+			console.log(
+				Number(requestBodyUserId) === Number(userIdExtractedFromCookies)
+			);
 			// check if the userId has been manipulated on the browser
 			// if there is a malicious userId manipulation
 			if (Number(requestBodyUserId) === Number(userIdExtractedFromCookies)) {
+				console.log("body: ", req.body);
 				const image = req.file;
-				console.log(image);
+				console.log("image first: ", image);
+				if (image === undefined) {
+					console.log("in if statement");
+					req.file = "2023-05-30-2102a75a-bf4a-4752-84e7-ec41a591af41.png";
+				}
+				console.log("image second: ", image);
 				const result = await BeerModels.addBeer({
 					...req.body,
 					imageName: req.file.filename,

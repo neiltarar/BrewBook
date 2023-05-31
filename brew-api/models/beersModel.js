@@ -4,14 +4,22 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 export const BeerModels = {
-	addBeer: async ({ beerName, notes, location, userId, imageName }) => {
+	addBeer: async ({
+		beerName,
+		notes,
+		location,
+		userId,
+		imageName,
+		website,
+	}) => {
 		try {
 			const date = new Date();
 			const result = await db(
 				`INSERT INTO beers (name, producer_website, place_consumed, date_consumed, notes, user_id, images)
 				 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-				[beerName, "no website yet", location, date, notes, userId, imageName]
+				[beerName, website, location, date, notes, userId, imageName]
 			);
+			console.log("server result: ", result);
 			return result;
 		} catch (error) {
 			console.log(error);

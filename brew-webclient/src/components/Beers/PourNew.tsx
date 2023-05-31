@@ -9,6 +9,7 @@ interface FormValues {
 	beerName: string;
 	notes: string;
 	location: string;
+	website: string;
 }
 
 interface Props {
@@ -22,6 +23,7 @@ export const PourNew = () => {
 		beerName: "",
 		notes: "",
 		location: "",
+		website: "",
 	};
 
 	// @ts-ignore
@@ -33,6 +35,7 @@ export const PourNew = () => {
 		beerName: Yup.string().required("Beer name is required"),
 		notes: Yup.string(),
 		location: Yup.string().required("Location is required"),
+		website: Yup.string().url("Must be a valid URL"),
 	});
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +104,18 @@ export const PourNew = () => {
 								id='location'
 								name='location'
 								placeholder='Enter location'
+								className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500'
+							/>
+						</div>
+						<div className='mb-4'>
+							<label htmlFor='website' className='block font-semibold'>
+								Website
+							</label>
+							<Field
+								type='text'
+								id='website'
+								name='website'
+								placeholder='Enter website'
 								className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500'
 							/>
 						</div>

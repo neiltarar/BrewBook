@@ -60,23 +60,31 @@ export const AllBeers: FC<Props> = ({ currentUser, beers }) => {
 			</section>
 			<section className='p-10'>
 				<div>
-					<ul className='grid grid-cols-2 md:grid-cols-3 gap-4'>
+					<ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
 						{beersList.map((beer: any) => (
-							<li key={beer.id}>
+							<li
+								key={beer.id}
+								className='bg-white shadow-md rounded-md p-4 w-full'
+							>
 								<p>Name: {beer.name}</p>
-								<p> Website: {beer.producer_website} </p>
+								<a href={beer.producer_website} className='text-green-500'>
+									{" "}
+									Website{" "}
+								</a>
 								<p> I drank it at: {beer.place_consumed}</p>
 								<p> Date: {beer.date_consumed}</p>
 								<p> Notes: {beer.notes}</p>
 								<div>
 									{process.env.NODE_ENV === "production" ? (
 										<img
+											className='mx-auto h-48 w-48 object-cover'
 											src={`${API_URL}/images/${beer.images}`}
 											alt={beer.name}
 										/>
 									) : (
 										<img
-											src={`http://localhost/images/${beer.images}`}
+											className='mx-auto h-48 w-48 object-cover'
+											src={`http://172.18.0.5/images/${beer.images}`}
 											alt={beer.name}
 										/>
 									)}
