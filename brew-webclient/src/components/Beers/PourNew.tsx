@@ -42,13 +42,13 @@ export const PourNew = () => {
 		setSelectedImage(e.target.files ? e.target.files[0] : null);
 	};
 
-	const handleSubmit = (values: FormValues) => {
+	const handleSubmit = async (values: FormValues) => {
 		// @ts-ignore
 		values.userId = currentUser.user.id;
 		//@ts-ignore
 		values.image = selectedImage;
+		await addBeers(values);
 		navigate("/my-beers");
-		addBeers(values);
 	};
 
 	useEffect(() => {

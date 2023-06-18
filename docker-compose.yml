@@ -1,6 +1,11 @@
 version: "3.8"
 networks:
   brew-book:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
+
 services:
   nginx:
     profiles:
@@ -15,7 +20,8 @@ services:
     depends_on:
       - api
     networks:
-      - brew-book
+      brew-book:
+        ipv4_address: 172.18.0.5
 
   db:
     profiles:

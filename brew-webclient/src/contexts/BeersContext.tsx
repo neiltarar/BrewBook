@@ -18,24 +18,15 @@ export const BeersProvider = ({ children }) => {
 	// @ts-ignore
 	const addBeers = async (values) => {
 		try {
-			console.log("values: ", values);
 			let formData = new FormData();
 			Object.entries(values).forEach(([key, value]) => {
-				console.log(key, value);
 				//@ts-ignore
 				formData.append(key, value);
 			});
-			//@ts-ignore
-			for (let pair of formData.entries()) {
-				console.log(pair[0] + ", " + pair[1]);
-			}
-			const response = await axios.post(
-				`${API_URL}/beers-brewing/pour-new`,
-				formData,
-				{
-					withCredentials: true,
-				}
-			);
+
+			await axios.post(`${API_URL}/beers-brewing/pour-new`, formData, {
+				withCredentials: true,
+			});
 		} catch (error) {
 			//@ts-ignore
 			console.log(error.response.data.message);

@@ -8,8 +8,9 @@ import { useBeerContext } from "../../contexts/BeersContext";
 const API_URL =
 	process.env.NODE_ENV === "production"
 		? process.env.REACT_APP_API_URL_DEPLOY
-		: process.env.REACT_APP_API_URL_DEV;
+		: process.env.REACT_APP_API_URL_IMAGES_DEV;
 
+console.log(API_URL);
 interface Props {
 	currentUser: { user: { name: string; id: number } };
 	beers: [
@@ -83,7 +84,7 @@ export const MyBeers: FC<Props> = ({ currentUser, beers }) => {
 									) : (
 										<img
 											className='mx-auto h-48 w-48 object-cover'
-											src={`http://localhost/images/${beer.images}`}
+											src={`${API_URL}/images/${beer.images}`}
 											alt={beer.name}
 										/>
 									)}
