@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 const API_URL =
 	process.env.NODE_ENV === "production"
 		? process.env.REACT_APP_API_URL_DEPLOY
-		: process.env.REACT_APP_API_URL_DEV;
+		: process.env.REACT_APP_API_URL_IMAGES_DEV;
 
 interface Props {
 	currentUser: { user: { name: string; id: number } };
@@ -33,8 +33,9 @@ export const AllBeers: FC<Props> = ({ currentUser, beers }) => {
 	const { deleteBeer } = useBeerContext();
 	const [beersList, setBeersList] = useState(beers);
 
-	const handleDelete = (beerId: number) => {
-		deleteBeer(currentUser.user.id, beerId);
+	const handleDelete = async (beerId: number) => {
+		console.log(currentUser);
+		await deleteBeer(currentUser.user.id, beerId);
 		//@ts-ignore
 		setBeersList((prevBeers) => prevBeers.filter((beer) => beer.id !== beerId));
 	};
@@ -84,7 +85,7 @@ export const AllBeers: FC<Props> = ({ currentUser, beers }) => {
 									) : (
 										<img
 											className='mx-auto h-48 w-48 object-cover'
-											src={`http://172.18.0.5/images/${beer.images}`}
+											src={`${API_URL}/images/${beer.images}`}
 											alt={beer.name}
 										/>
 									)}

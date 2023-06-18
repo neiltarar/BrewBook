@@ -83,8 +83,14 @@ export const BeersControllers = {
 
 	deleteBeer: async (req, res) => {
 		try {
+			console.log(req.params);
+			console.log(req.body);
+			console.log(req.user);
+			let userIdExtractedFromCookies;
 			const requestBodyUserId = req.body.userId;
-			const userIdExtractedFromCookies = req.user.userId;
+			req.user
+				? (userIdExtractedFromCookies = req.user.userId)
+				: (userIdExtractedFromCookies = undefined);
 			const deleteReqBeerId = req.params.id;
 			// check if the userId has been manipulated on the browser
 			// if there is a malicious userId manipulation
